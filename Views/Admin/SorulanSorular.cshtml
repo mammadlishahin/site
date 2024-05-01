@@ -1,0 +1,172 @@
+@model List<Soru>
+
+<p class="h2 text-center text-primary p-2 m-2">Size İletilmiş Sorular</p>
+<style>
+
+
+
+</style>
+<div class="container">
+    <div class="row">
+        <div class="accordion accordion-flush" id="accordionFlushExample">
+            @{
+                int soruIndex = 0;
+                bool kapi=true;
+            }
+            
+            @foreach (Soru soru in Model)
+            {
+                soruIndex++;
+                string accordionId = $"flush{soru.Id}";
+                if (soru.Okundu == false)
+                { @* if *@
+
+                    <div class="accordion-item my-2 "
+                        style="border-bottom-left-radius: 20px; border-bottom-right-radius: 20px;">
+                        <div class="accordion-header h2">
+                            <button class="accordion-button collapsed rounded-bottom" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#@accordionId" aria-expanded="false" aria-controls="@accordionId">
+                                <div class="SoruInfo">
+
+                                    <span class="p-2 me-1"
+                                        style="border-right: 1px solid gray; display:inline-block;">@soruIndex</span>
+                                    <span class="p-2 text-info">@soru.Date</span>/
+                                    Ad: <span class="p-2 text-info">@soru.Ad</span>
+
+
+                                </div>
+                            </button>
+                        </div>
+                        <div id="@accordionId" class="accordion-collapse shadow collapse "
+                            data-bs-parent="#accordionFlushExample"
+                            style="border-bottom-left-radius: 20px; border-bottom-right-radius: 20px;">
+                            <div class="accordion-body">
+                                User: <span class="p-2 text-info">@(soru.User != null ? soru.User : "Kayıtlı Değil")</span>/
+                                Email: <span class="p-2 text-info">@soru.Email</span>
+                                <hr>
+                                @soru.Mesaj
+                            </div>
+                            <div class="d-flex justify-content-between w-100">
+                                <form class="me-auto" method="get">
+                                    <input type="hidden" value="@soru.Id" name="id">
+                                    <button type="submit" class="btn btn-danger" asp-action="SoruEnd"
+                                        asp-controller="Admin">Yanıtlandı Olarak İşaretle</button>
+                                </form>
+                                @* <div class="btn btn-primary">Yanıtla</div> *@
+                                <span>
+                                        <input type="hidden" name="id" value="@soru.Id">
+                                        <input type="hidden" name="email" value="@soru.Email">
+
+                                        <button type="button" class=" btn btn-primary modal-open-button" data-bs-toggle="modal"
+                                        data-bs-target="#YanitlaModal">Yanıtla</button>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                } @* if *@
+                else
+                { @* else *@
+
+                    if(kapi)
+                    {
+                        <p class="h3 text-center">Yanıtlanmış Sorular</p>
+                        kapi=false;
+                    } 
+                    <div class="accordion-item my-2 "
+                        style="border-bottom-left-radius: 20px; border-bottom-right-radius: 20px;">
+                        <div class="accordion-header h2">
+                            <button class="accordion-button collapsed rounded-bottom bg-secondary text-white" type="button"
+                                data-bs-toggle="collapse" data-bs-target="#@accordionId" aria-expanded="false"
+                                aria-controls="@accordionId">
+                                <div class="SoruInfo">
+                                    <span class="p-2 me-1">@soruIndex</span>
+                                    <span class="p-2 ">@soru.Date</span>/
+                                    Ad: <span class="p-2 ">@soru.Ad</span>
+                            </button>
+                        </div>
+                        <div id="@accordionId" class="accordion-collapse shadow collapse bg-dark text-white"
+                            data-bs-parent="#accordionFlushExample"
+                            style="border-bottom-left-radius: 20px; border-bottom-right-radius: 20px;">
+                            <div class="accordion-body">
+                                User: <span class="p-2 ">@(soru.User != null ? soru.User : "Kayıtlı Değil")</span>/
+                                Email: <span class="p-2 ">@soru.Email</span>
+                                <hr>
+                                @soru.Mesaj
+                            </div>
+                            <div class="d-flex justify-content-between w-100 pb-2 pe-2">
+                                <input type="hidden" name="id" value="@soru.Id">
+                                <input type="hidden" name="email" value="@soru.Email">
+                                <button type="button" class=" btn btn-outline-primary ms-auto modal-open-button" data-bs-toggle="modal"
+                                    data-bs-target="#YanitlaModal">Birdaha Yanıtla</button>
+                            </div>
+                        </div>
+
+                    </div>
+                } @* else *@
+
+            }@* foreach *@
+        </div>
+    </div>
+</div>
+
+
+
+<!-- Modal Yanıtla -->
+<form method="post" class="modal fade " id="YanitlaModal" data-bs-backdrop="static" data-bs-keyboard="false"
+    tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Mesajınızı Girin.</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body px-1">
+                <textarea class="form-control" name="yanit" cols="40" rows="4" required minlength="2"></textarea>
+                <input type="hidden" name="id">
+                <input type="hidden" name="email">
+            </div>
+            <div class="modal-footer p-1">
+                <button type="button" class="btn btn-secondary me-auto" data-bs-dismiss="modal">İptal</button>
+                <button type="submit" class="mt-1 btn btn-primary " asp-controller="Admin"
+                    asp-action="Yanit">Gönder</button>
+            </div>
+        </div>
+    </div>
+</form>
+<!-- Modal Yanıtla -->
+
+
+<script>
+
+
+    try {
+        var modal = document.querySelector('#YanitlaModal');
+        // Modalı Aktif etmak için button alınır
+        var button_open_modal = document.querySelectorAll('.modal-open-button');
+
+        // Alınan buttonlar birden fazla olabileceği için forEach kullanılıyor 
+        button_open_modal.forEach(function (ButtonElement) { 
+            // gelen her ButtonElementi dinleniyor
+            ButtonElement.addEventListener('click', function () {
+                // Buttonun Bir Üst elementi alınıyor taki form elementine ulaşana kadar
+                // div/li/form
+                var parentElement = ButtonElement.parentNode;
+                // Seçilen Form Parent elementin altındaki inputun valuesi alınır
+                var SoruId = parentElement.querySelector('input[name="id"]').value;
+                var SoruEmail = parentElement.querySelector('input[name="email"]').value;
+                
+                modal.querySelector('input[name="id"]').value = SoruId
+                modal.querySelector('input[name="email"]').value = SoruEmail
+                
+            }); // addEventListener
+
+        }); // forEach
+
+    } catch (error) {
+        console.error(error)
+        console.log("datetime-modal Alanında hata var");
+    }
+
+
+</script>

@@ -1,0 +1,279 @@
+@model List<UserAndTherapy>
+
+@{
+    DateTime turkiyeSaati = TimeZoneInfo.ConvertTime(DateTime.Now, TimeZoneInfo.FindSystemTimeZoneById("Turkey Standard Time"));
+    DateTime SuAnkiTurkiyeZamani = new DateTime(turkiyeSaati.Year, turkiyeSaati.Month, turkiyeSaati.Day, turkiyeSaati.Hour, turkiyeSaati.Minute, 0);
+    string[]  ayIsimleri = ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"];
+
+}
+@{
+    string changeDataTime = "";
+    if (TempData["ChangeDataTime"] != null)
+    {
+        changeDataTime = (string)TempData["ChangeDataTime"];
+    }
+}
+
+@if (changeDataTime=="musait")
+{
+    <p class="alert alert-success mt-3 h5">Seans Tarihi Ertelendi</p>
+}
+else if(changeDataTime=="musaitdegil"){
+    <div class="alert alert-danger mt-3">
+        <div class="h3">Hata: Seans Ertelenemedi!</div>
+        <p class="h6">Seans Tarihini değiştirirken dikkatli olun diğer beklemede olan randevular ile çakışa bilir</p>
+    </div>
+}
+
+
+<div class="container mt-2">
+  <div class="row">
+
+
+    <div class="col-md">
+      <div class="h1 text-centert text-primary">Bekleyen Terapiler</div>
+@{ @* Open Razor 1 *@
+    sbyte kapi=0;
+
+        <ol class="list-group list-group-numbered accordion"  id="accordionExample">
+            @foreach(var item in Model){
+                string collapseID= $"collapseExample{@item.Therapy.Id}";
+                if(item.Therapy.TherapyStatus==false){  @* if-a *@
+                    <li class="list-group-item d-flex justify-content-between align-items-start">
+                        
+                        <div class="ms-2 me-auto d-flex flex-column">
+                                <div><span class="fw-bold">User Name: </span> <a href="/Admin/Kullanici?user=@item.User.UserName"  data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Kullanıcıyı Görüntüle">@item.User.UserName</a>.</div>
+                                <span><span class="fw-bold">Görüşme Türü: </span>@item.Therapy.Type</span>
+                                <span><span class="fw-bold">Aracı Uygulama: </span>@item.Therapy.AppName</span>
+                                @if(!string.IsNullOrEmpty(item.Therapy.IstegeBagli)){
+                                    <a class="btn m-1 btn-sm btn-primary position-relative mt-1" data-bs-toggle="collapse" href="#@collapseID" role="button" aria-expanded="false" aria-controls="collapseExample">
+                                        Aç
+                                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-secondary">
+                                            Mesaj
+                                        </span>
+                                    </a>
+                                }
+                        </div>
+
+                        
+
+
+                        @* Eğer 0 dönerse tarih1, tarih2'den önce. *@
+                        @if(0>DateTime.Compare(SuAnkiTurkiyeZamani, item.Therapy.StartDateTime)){
+                            TimeSpan zamanFarki = item.Therapy.StartDateTime.Subtract(SuAnkiTurkiyeZamani);
+                            int gun=zamanFarki.Days;
+                            int saat=zamanFarki.Hours;
+                            int dakika=zamanFarki.Minutes;
+                            string sifir=item.Therapy.StartDateTime.Minute.ToString().Length>1?"":"0";
+                            
+                            <div class=" alert-info  m-0 d-flex flex-column rounded text-center" role="alert" style="min-width: 157px;">
+                            <span>@item.Therapy.StartDateTime.Day @ayIsimleri[item.Therapy.StartDateTime.Month-1], Saat @item.Therapy.StartDateTime.Hour:@sifir@item.Therapy.StartDateTime.Minute</span>
+                            <span class="badge bg-primary text-white rounded-bottom" style="border-radius: 0px;">@gun Gün @saat saat @dakika dakika </span>
+                            </div>
+                        }
+                        else{@* else-b *@
+
+                            <div class="btn-group">
+                                <button class="btn btn-success position-relative btn-lg dropdown-toggle" style="background-color: #198767b8;" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Terapiye Başla
+                                    <span style="left: 10px; top:2px;" class="position-absolute  translate-middle badge rounded-pill bg-danger">
+                                        Şimdi
+                                    </span>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-dark px-1">
+                                    <form method="post">
+                                        <input type="hidden" name="id" value="@item.Therapy.Id">
+                                        <li><input type="text" name="url" id="urlPasteInput" class="form-control url-paste" placeholder="Davet Urlsi yapıştırın"  ></li>
+                                        <li><div class="d-grid gap-2"><button class="d-md-block mt-1 btn btn-primary url-send-button disabled"  asp-controller="Admin" asp-action="SendUrl">Başlat</button></div></li>
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li><div class="d-grid gap-2"><button type="button" class="btn btn-warning modal-open-button" data-bs-toggle="modal" data-bs-target="#datatimeChange">Seansı Ertele</button></div></li>
+                                        <li><div class="d-grid gap-2"><button type="button" class=" mt-1 btn btn-danger modal-open-button" data-bs-toggle="modal" data-bs-target="#EndTerapiModal">Seansı Sonlandır</button></div></li> 
+                                    </form>
+                                </ul>
+                            </div>
+
+                        }@* else-b *@
+                    </li>
+                    <div class="collapse" id="@collapseID">
+                            <div class="card card-body shadow">
+                                @item.Therapy.IstegeBagli
+                            </div>
+                    </div>
+                     <hr>
+                } @* if-a *@
+                else
+                {
+                    // tamamlanmış terapiler Buraya gelecek
+                    if(kapi==0){
+                        <h4 class="text-secondary">Tamamlanmış Terapiler</h4>
+                    }
+                    kapi=1;
+
+                    @* <li class="list-group-item d-flex justify-content-between align-items-start border-dark bg-secondary text-danger-emphasis text-white mb-1 container-fluid" style="border-top: 1px solid;"> *@
+                    <li class="list-group-item d-flex flex-wrap justify-content-between align-items-start border-dark bg-secondary text-danger-emphasis" style="border-top: 1px solid;">
+
+                        <div class="ms-2 me-1">
+                            <div class="fw-bold">@item.Therapy.Type</div>
+                            @item.Therapy.AppName
+                        </div>
+                        <p class="h5  text-warning">Tamamlanmış </p>
+
+                        <div class="mx-3 me-auto"><span class="fw-bold">User Name: </span> <a href="/Admin/Kullanici?user=@item.User.UserName"  data-bs-toggle="tooltip" data-bs-placement="top" class="link-info link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">@item.User.UserName</a></div>
+
+                        <div class="  m-0  rounded text-center" role="alert" style="min-width: 157px;">
+                            <span class="text-white">@item.Therapy.StartDateTime.Year, @item.Therapy.StartDateTime.Day @ayIsimleri[item.Therapy.StartDateTime.Month-1], Saat @item.Therapy.StartDateTime.Hour:@item.Therapy.StartDateTime.Minute</span>
+                        </div>
+                    </li>
+                        
+                } @* else-a *@
+            } @* foreach *@
+        </ol>
+} @* Close Razor 1 *@
+
+
+    </div>
+
+  </div>
+</div>
+
+ <!-- Modal seansi ertele -->
+<form method="post" class="modal fade " id="datatimeChange" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h1 class="modal-title fs-5" id="exampleModalLabel">Tarih Seçin</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+        <input value="@SuAnkiTurkiyeZamani.ToString("yyyy-MM-ddTHH:mm:ss")" name="zaman" type="datetime-local" class="form-control" id="datetime-modal" required>
+        <input type="hidden" name="id">
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+            <button type="submit" class="mt-1 btn btn-warning "  asp-controller="Admin" asp-action="ChangeTherapyDataTime">Seansı Ertele</button>
+        </div>
+        </div>
+    </div>
+</form>
+<!-- Modal End seansi ertele -->
+
+
+ <!-- Modal seansi Sonlandır -->
+<form method="get" class="modal fade " id="EndTerapiModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+        <div class="modal-header">
+            <div class="modal-title fs-5 h1 text-danger" id="exampleModalLabel">Dikkat Bu İşlem Geri Alınamaz!</div>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <div class="text-danger h6">Seansı Sonlandırmak İstediğinizden Eminmisiniz?</div>
+        <input type="hidden" name="id">
+        </div>@* asp-controller="Admin" asp-action="EndTherapy" *@
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+            <button type="submit" class="mt-1 btn btn-danger "  asp-controller="Admin" asp-action="EndTherapy">Sonlandırmak</button>
+        </div>
+        </div>
+    </div>
+</form>
+<!-- Modal End seansi Sonlandır -->
+
+
+
+<script>
+
+    
+
+
+  @* Şu anki Türkiye tarihi ve saatini alır. örn:  *@
+    function SuAnkiTurkiyeSaati() {
+      var zaman = new Date();
+      const bicimlendirici = new Intl.DateTimeFormat('tr-TR', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        timeZone: 'Europe/Istanbul',
+        hour12: false // 24 saat formatı için
+      });
+      var CurrentDate = bicimlendirici.format(zaman);
+
+
+      CurrentDate = CurrentDate.replace('.', '-')
+      CurrentDate = CurrentDate.replace('.', '-')
+      return CurrentDate;
+    } // SuAnkiTurkiyeSaati()
+
+
+
+</script>
+
+<script>
+
+try {
+    window.addEventListener('load', function () {
+
+        var input = document.getElementById('urlPasteInput');
+        var button_url = document.querySelector('.url-send-button');
+
+        // Input alanını dinleme
+        if(input!=null){
+            input.addEventListener('input', function() {
+                if(input.value.length>2){
+                    button_url.classList.remove("disabled")
+                }
+                else{
+                    button_url.classList.remove("disabled")
+                    button_url.classList.add("disabled")
+                } // else
+            }); // input.addEventListener
+        } // if
+
+        
+
+    }); // window.addEventListener
+    
+} catch (error) {
+  console.log("Input Alanı Dinlenemiyor");
+}
+
+
+try{
+    var modal = document.querySelectorAll('form.modal.fade');
+    // Modalı Aktif etmak için button alınır
+    var button_open_modal = document.querySelectorAll('.modal-open-button');
+
+        // Alınan buttonlar birden fazla olabileceği için forEach kullanılıyor 
+        button_open_modal.forEach(function (ButtonElement) {
+            // gelen her ButtonElementi dinleniyor
+            ButtonElement.addEventListener('click', function() {
+            // Buttonun Bir Üst elementi alınıyor taki form elementine ulaşana kadar
+            // div/li/form
+            var parentElement = ButtonElement.parentNode.parentNode.parentElement;
+            // Seçilen Form Parent elementin altındaki inputun valuesi alınır
+            var TherapyId = parentElement.querySelector('input[name="id"]').value;
+            modal.forEach(function (modalItem){
+                modalItem.querySelector('input[name="id"]').value=TherapyId
+            })
+            //modal.querySelector('input[name="id"]').value=TherapyId
+           
+            }); // addEventListener
+            
+        }); // forEach
+        
+} catch (error) {
+    console.error(error)
+  console.log("datetime-modal Alanında hata var");
+}
+
+
+
+
+
+
+
+   
+</script>

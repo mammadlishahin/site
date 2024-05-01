@@ -1,0 +1,117 @@
+header{
+    background-image:linear-gradient(to bottom, #00c3a5, #00c3a500);
+    transition: padding 1s;
+}
+nav{
+    background-color:#00c397;
+    position: fixed;
+    transition: top 0.5s ease-in-out;
+}
+#navbarSupportedContent ul li a{
+    color: #fff;
+    margin: 0px 2px;
+    padding: .375rem .75rem;
+    border-radius: 0.25rem;
+    border: 1px solid transparent;
+    
+}
+#navbarSupportedContent ul li a:hover{
+    background: #4b4b4ba1;
+    transition: color 0.2s ease-in-out;
+}
+
+.navbar-brand2
+{
+    border-radius: 50%;
+    display: inline-block;
+    height: 50px!important;
+    width: 50px!important;
+    background-size: 110% 110%;
+    background-position: center;
+}
+.logo{
+    font-family: Georgia, serif;
+    color: #4b4b4b;
+}
+.navbar-brand-container:hover .logo{
+    color: #183205;
+    transition: color 0.2s ease-in-out;
+}
+.navbar-brand-container:active .logo{
+    color: #55ba0d;
+}
+.photo{
+    
+    background-size: cover; /* Fotoğrafın ekran boyutuna uyum sağlamasını sağlar */
+    background-position: center;
+}
+.photo img{
+    padding: 10px 0 0 0;
+    border-bottom-left-radius: 10%;
+    border-top-left-radius: 45%;
+    float: right;
+}
+/* /////////////////////////////////////////////////////////////////////////////// */
+
+
+
+main{
+    max-width: 1800px;
+    
+}
+/* ////////////////////////////////////////////////////////////// */
+
+#contact2:hover,
+#contact1:hover {
+    color: white; 
+    opacity: 0.8; 
+    transform: translateY(-20%);
+    transition: all 0.4s ease-in-out;
+}
+#contact2,#contact1{
+    transform: translateY(-40%);
+    white-space: nowrap;
+}
+
+#contact1{
+    display: none;
+}
+
+@media(max-width:991px){
+    #contact2{
+        
+        display: none;
+    }
+    #contact1{
+        display: block;
+    }
+    .GirisYapKayitOlButton{
+        max-width: 75%;
+    }
+
+}
+@media(max-width:420px){
+    #contact2{
+        display: block;
+    }
+    #contact2 div{
+        text-align:center;
+        padding-right: 15px
+    }
+    #contact1{
+        display: none;
+    }
+}
+.fa-instagram {
+    background: linear-gradient(to right, #f9ce34, #ee2a7b, #6228d7);
+    -webkit-background-clip: text; /* Metin rengini sadece arka plan geçişine göre uygula */
+    -webkit-text-fill-color: transparent; /* Metin rengini şeffaf yap */
+    font-size: 2.3rem;
+    
+}
+
+.Log-Out-Button:hover{
+    background-color: #7fffd47d;
+    transition: all 0.2s ease-in-out;
+}
+

@@ -1,0 +1,85 @@
+﻿
+
+@section AnaSayfaHeader {
+    <!-- Ana sayfa başkık -->
+    <div class="container-fluid header">
+        <div class="row">
+            <div class="col-md-8">
+                <h1 class="text-center h1 py-4">Klinik Psikolog Naciye Usta </h1>
+
+                <h3 class="h3">
+                    Pir psikolog, insanın derinliklerine dalarak karanlık suları aydınlatan ve içsel gemileri güvenle limana
+                    ulaştıran rehberdir.
+
+                </h3>
+            </div>
+
+            <div class="col-md-4 photo p-0">
+                <img class="w-75" src="~/img/NaciyeUsta.jpg" alt="Psikolog Naciye Usta">
+            </div>
+        </div>
+    </div>
+
+}
+<div class="container text-center">
+    <div class="d-grid gap-2 w-50 m-auto pt-4">
+        <a class=" h3 button-RandevuOlustur" asp-action="Terapiler" asp-controller="Work" type="button">Randevu
+            Oluştur</a>
+    </div>
+</div>
+
+@model List<string>
+<section class="container py-4" id="OneCikanMakaleler">
+    <div class="row my-grid-container">
+
+        @for (int i = 0; i < Model.Count; i++)
+        {
+            var item = Model[i];
+            @await Html.PartialAsync("_Section", (item, i))
+        }
+    </div>
+</section>
+
+
+<div class="card container-fluid p-0 px-2 my-2">
+
+    <div class="card-header">
+        Psikoloğunuz Hakkında bilgi
+    </div>
+    <div class="card-body">
+
+        <p class=" card-title lh-lg h5 fw-normal"><strong class="fw-bold">Naciye Usta</strong> 2020 yılından bu yana
+            profesyonel olarak; yetişkin, çocuk ve ergen danışanları
+            ile online ve yüz yüze
+            psikoterapi süreci yürütmektedir.</p>
+        <div class="container-fluid p-0">
+            <div class="row">
+                <div class="col-md-6 pb-3">
+                    <ul class="list-group  shadow-sm" style="">
+                        <li class="list-group-item d-inline-block active fs-5" style="background-color: #1f3557;">Uzmanlık alanları</li>
+                        <li class="list-group-item d-inline-block">Yetişkin Psikoterapisi</li>
+                        <li class="list-group-item d-inline-block">Çocuk ve Ergen Psikoterapisi</li>
+                        <li class="list-group-item d-inline-block">Anksiyete (Kaygı) Bozuklukları</li>
+                        <li class="list-group-item d-inline-block">Kadın Cinsel İşlev Bozukluğu</li>
+                        <li class="list-group-item d-inline-block">Evlilik ve Çift Terapisi</li>
+
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <a asp-controller="Work" asp-action="NaciyeHakkinda" class="btn btn-secondary">Öz Geçmişi Gör</a>
+    </div>
+</div>
+
+
+
+<article style="background-image: url('/img/CenterBackgroung.jpg');">
+    <figure class=" soru-sor-container">
+        @await Html.PartialAsync("_SoruSor", new Soru())
+
+    </figure>
+
+</article>
+@await Html.PartialAsync("_Map")
+<script src="~/js/oneCikanMekale.js"></script>

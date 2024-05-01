@@ -1,0 +1,25 @@
+
+.hakkinda_container{
+    background-color: white;
+}
+.Novaturiend_logo_Containet{
+    display: none;
+
+}
+@media (max-width: 1200px) {
+    .hakkinda_container{
+        flex-direction: column;
+
+    }
+    .Novaturiend_logo_Containet{
+        display: block;
+        margin-right: 5px;
+    }
+}
+@media (max-width: 360px) {
+    figure{
+        flex-direction: column;
+
+    }
+    
+}

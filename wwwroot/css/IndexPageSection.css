@@ -1,0 +1,108 @@
+
+.row .btn-group button strong{
+    font-size:1rem;
+}
+.dropdown-width80vh{
+    width:80vw;
+    transition: all 0.3s ease;
+}
+
+
+/* Button Randevu Olustur */
+.button-RandevuOlustur {
+    align-items: center;
+    appearance: none;
+    background-image: radial-gradient(110% 100% at 50% 0, #4bd7269c 0, #54ff964d 100%);
+    border: 0;
+    border-radius: 6px;
+    box-shadow: rgb(45 35 66 / 37%) 0 2px 4px, rgb(45 35 66 / 32%) 0 7px 13px -3px, rgb(58 65 111 / 20%) 0 -3px 0 inset;
+    box-sizing: border-box;
+    color: #000000;
+    cursor: pointer;
+    display: inline-flex;
+    height: 48px;
+    justify-content: center;
+    line-height: 1;
+    list-style: none;
+    overflow: hidden;
+    padding-left: 16px;
+    padding-right: 16px;
+    position: relative;
+    text-align: left;
+    text-decoration: none;
+    transition: box-shadow .15s, transform .15s;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    white-space: nowrap;
+    will-change: box-shadow, transform;
+    font-size: 18px;
+}
+
+
+.button-RandevuOlustur:hover {
+    box-shadow: rgba(45, 35, 66, .4) 0 4px 8px, rgba(45, 35, 66, .3) 0 7px 13px -3px, #218818cf 0 -3px 0 inset;
+    transform: translateY(-1px);
+}
+
+.button-RandevuOlustur:active {
+    box-shadow: #6c757d 0 3px 30px inset;
+    transform: translateY(2px);
+}
+
+/* Giriş Yap / Kayıt Ol Button */
+.GirisYapKayitOlButton {
+  background-image: linear-gradient(-180deg, #126511 0%, #309f2c 100%);
+  border-radius: .5rem;
+  box-sizing: border-box;
+  color: #FFFFFF;
+  display: flex;
+  font-size: 16px;
+  justify-content: center;
+  padding: 0.25rem 1rem;
+  text-decoration: none;
+  /* width: 100%; */
+  
+  border: 0;
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}
+
+.GirisYapKayitOlButton:hover {
+    opacity: 0.8;
+    outline:1px solid green;
+    color:white;
+    background-color: #6c757d;
+}
+
+@media (min-width: 768px) {
+  .GirisYapKayitOlButton {
+    padding: 0.5rem 1rem;
+  }
+  
+}
+
+
+.soru-sor-container{
+  backdrop-filter: blur(1px);
+  background-color: #0707072b;
+}
+.soru-sor-container p,
+.soru-sor-container label
+{
+  color:#fff;
+}
+.soru-sor-container #emailHelp{
+  backdrop-filter: blur(1px);
+  color: #aaff9c
+}
+.soru-sor-container form{
+  max-width: 75%;
+}
+@media (max-width: 800px){
+  .soru-sor-container form{
+    max-width: 90%;
+  }
+}

@@ -1,0 +1,41 @@
+html {
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  margin-bottom: 60px;
+  background-color:#c9c8c8 ;
+}
+
+
+
+/* ///////////////////////////////// */
+
+
+article{
+  background-size: cover; /* Fotoğrafın ekran boyutuna uyum sağlamasını sağlar */
+  background-position: center;
+  /* height: 25rem; */
+}
+
+/* Fotter */
+
+ul.nav .nav-item ~ .nav-item a{
+  border-left:1px solid gray;
+}
+/* //////////////////// Terapiler sayfasi ////////////////////////// */
+
+
+   

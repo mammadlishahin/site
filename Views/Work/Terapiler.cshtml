@@ -1,0 +1,274 @@
+@model Models.PaymentCardAndTerapiler
+
+<p class="py-2"></p>
+
+
+
+@{
+  int? veri = TempData["ISsuccess"] as int?;
+  if (veri.HasValue)
+  {
+    <div class="alert alert-success fs-3" role="alert">
+      Randevu başarılı bir şekilde oluşturuldu
+    </div>
+
+  }
+
+  DateTime turkiyeSaati = TimeZoneInfo.ConvertTime(DateTime.Now, TimeZoneInfo.FindSystemTimeZoneById("Turkey Standard Time"));
+  DateTime SuAnkiTurkiyeZamani = new DateTime(turkiyeSaati.Year, turkiyeSaati.Month, turkiyeSaati.Day, turkiyeSaati.Hour, turkiyeSaati.Minute, 0);
+
+  string bugun = SuAnkiTurkiyeZamani.ToString("yyyy-MM-ddTHH:mm:ss");
+
+
+}
+
+<button type="button" class="btn btn-success ms-3 btn-lg" data-bs-toggle="modal" data-bs-target="#FormModal">Yeni Seans Oluştur
+  <i class="fa fa-plus" aria-hidden="true"></i>
+</button>
+
+@* Modal Form Start *@
+<form method="post" asp-controller="Work" asp-action="Bank_Cart" class="modal fade tarih-sec" id="FormModal"
+  tabindex="-1" aria-labelledby="staticBackdropLabel" data-bs-keyboard="false" aria-hidden="true" data-bs-backdrop="static">
+
+  <div class="modal-dialog">
+    <div class="modal-content shadow">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="staticBackdropLabel">Randevu Al</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body py-0 px-2">
+        <div>
+
+
+          <div class="container-flued  py-2">
+            <div class="row justify-content-between g-3">
+              <div class="col-md-5">
+                <label for="date" class="form-label">Tarih Seçin</label>
+
+                <input asp-for="Terapi.StartDateTime" type="datetime-local" value="@bugun" class="form-control" id="datetime" required>
+
+              </div>
+              <div class="col-md-5">
+              
+              </div>
+            </div>
+          </div>
+
+
+          <select asp-for="Terapi.Type" id="GorusmeTuru" class="form-select" aria-label="Default select example"
+            required>
+            <option disabled selected hidden>Görüşme Türünü Seçin</option>
+            <option value="Görüntülü">Görüntülü</option>
+            <option value="Sesli">Sesli</option>
+            <option value="Mesajlaşma">Mesajlaşma</option>
+          </select>
+          <div class="form-text h6">Görüntülü ve Sesli görüşmeler Aracı uygulamar "Google Meet" veya "Microsoft
+            Teams" üzerinden gerçekleşmektedir.</div>
+          <hr>
+
+          <div class="app-select" hidden>
+            <span>Lütfen size uygun olan uygulamayı seçin</span>
+            <div class="form-check d-flex align-items-center">
+              <input asp-for="Terapi.AppName" value="Google Meet" class="form-check-input" type="radio" id="GoogleMeet"
+                checked>
+              <label class="form-check-label" for="GoogleMeet">
+                <img class="mx-2" width="26" src="~/img/Google_Meet.svg.png" alt="">Google Meet
+              </label>
+            </div>
+            <div class="form-check d-flex align-items-center">
+              <input asp-for="Terapi.AppName" value="Microsoft Teams" class="form-check-input" type="radio"
+                id="MicrosoftTeams">
+              <label class="form-check-label" for="MicrosoftTeams">
+                <img class="mx-2" width="26" src="~/img/Microsoft_Teams.svg.png" alt="">Microsoft Teams
+              </label>
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label for="message-text" class="col-form-label">Terapiste Mesajınız: <span class="form-text">(İsteğe
+                bağlı)</span></label>
+            <textarea asp-for="Terapi.IstegeBagli" class="form-control" id="message-text"></textarea>
+          </div>
+
+        </div>
+      </div>
+      <div class="modal-footer p-0">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+        <button type="submit" class="btn btn-primary">Devam Et</button>
+      </div>
+    </div>
+  </div>
+</form>
+@* Modal Form End *@
+
+
+
+
+<div class="container">
+  <div class="row">
+
+
+    <div class="col-12 mx-auto">
+      <div class="h1 text-center text-primary">Bekleyen Terapiler</div>
+      @{
+        List<Terapiler> Randevular=ViewBag.Terapiler;
+        string[]  ayIsimleri = ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"];
+        int kapi=0;
+        // Randevonunolup olmadığını kontyol ediyor.
+        if(Randevular.Count>0){ //if-a
+
+        
+        <ol class="list-group list-group-numbered">
+          
+          @foreach (Terapiler item in Randevular)
+          {
+            if(item.TherapyStatus==false){
+
+            
+            <li class="list-group-item d-flex justify-content-between align-items-start mb-1">
+              <div class="ms-2 me-auto">
+                <div class="fw-bold">@item.Type</div>
+                @item.AppName
+              </div>
+              @* Eğer 0 dönerse tarih1, tarih2'den önce.
+                 Eğer bu if bloğuna girerse demekki terapi zamannina daha var.
+               *@
+              @if(0>DateTime.Compare(SuAnkiTurkiyeZamani, item.StartDateTime)){ //if-b
+
+                  TimeSpan zamanFarki = item.StartDateTime.Subtract(SuAnkiTurkiyeZamani);
+                  int gun=zamanFarki.Days;
+                  int saat=zamanFarki.Hours;
+                  int dakika=zamanFarki.Minutes;
+                  string sifir=item.StartDateTime.Minute.ToString().Length>1?"":"0";
+                
+                <div class=" alert-info  m-0 d-flex flex-column rounded text-center" role="alert" style="min-width: 157px;">
+                  <span>@item.StartDateTime.Day @ayIsimleri[item.StartDateTime.Month-1], Saat @item.StartDateTime.Hour:@sifir@item.StartDateTime.Minute</span>
+                  <span class="badge bg-primary text-white rounded-bottom" style="border-radius: 0px;">@gun Gün @saat saat @dakika dakika </span>
+                </div>
+              } //if-b
+              else
+              { //else-b
+
+                if(!string.IsNullOrEmpty(item.Url)){ // if-c
+                  <sup class="p-2 d-block alert-warning me-1 rounded">Şimdi</sup>
+                  <a href="@item.Url" target="_blank" class="btn btn-success" style="background-color: #194687b8;">Terapiye Başla</a>
+
+                  } // if-c
+                  else{ // else-c
+                  <p class="p-1">Lütfen Beklemede Kalın</p>
+                  <div class="spinner-border" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                  </div>
+
+                  }// else-c
+                
+               } @*// else-b *@
+              
+            </li>
+            }
+            else{ @* else-b *@
+              if(kapi==0){
+                <p class="text-secondary h4 mt-3 mb-1">Tamamlanmış Terapiler</p>
+              }
+              kapi=1;
+            <li class="list-group-item d-flex justify-content-between align-items-start border-dark bg-secondary text-danger-emphasis" style="border-top: 1px solid;">
+                  <div class="ms-2 me-1 ">
+                    <div class="fw-bold">@item.Type</div>
+                    @item.AppName
+                  </div>
+                  <p class="h5 me-auto text-warning">Tamamlanmış </p>
+
+                  <div class="m-0 rounded text-center " role="alert" style="min-width: 157px;">
+                    <span>@item.StartDateTime.Year, @item.StartDateTime.Day @ayIsimleri[item.StartDateTime.Month-1], Saat @item.StartDateTime.Hour:@item.StartDateTime.Minute</span>
+                  </div>
+              </li>
+            } @* else-b *@
+          }
+
+        </ol>
+        }// if-a
+        else
+        {
+          <div class="alert alert-danger h4" role="alert">Henüz Randevu Oluşturmadınız</div>
+        }
+      }
+    </div>
+
+  </div>
+</div>
+
+
+@* GorusmeTuru Seçmesine Göre .app-select divinin görünüp görünmemesi*@
+<script>
+  document.getElementById('GorusmeTuru').addEventListener('change', function () {
+    const app_select = document.querySelector(".app-select");
+    if (this.value == 'Görüntülü' || this.value == 'Sesli') {
+      app_select.removeAttribute("hidden");
+    } else {
+      app_select.setAttribute("hidden", "hidden");
+    }
+  });
+
+
+</script>
+
+<script>
+
+  @* Şu anki Türkiye tarihi ve saatini alır. örn:  *@
+    function SuAnkiTurkiyeSaati() {
+      var zaman = new Date();
+      const bicimlendirici = new Intl.DateTimeFormat('tr-TR', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        timeZone: 'Europe/Istanbul',
+        hour12: false // 24 saat formatı için
+      });
+      var CurrentDate = bicimlendirici.format(zaman);
+
+
+      CurrentDate = CurrentDate.replace('.', '-')
+      CurrentDate = CurrentDate.replace('.', '-')
+      return CurrentDate;
+    } // SuAnkiTurkiyeSaati()
+
+  //console.log(SuAnkiTurkiyeSaati())
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+@if(Context.User.Identity!=null&& false){
+    <script>
+      let init = async () => {    
+
+
+    connection = new signalR.HubConnectionBuilder()
+      .withUrl('/myhub')
+      .build();
+    await connection.start();
+        const userName=@Html.Raw(Json.Serialize(Context.User.Identity.Name));
+
+    connection.invoke("MetodName").catch(function (err) {
+        return console.error(err.toString());
+    });
+
+  }// async
+  init();
+
+
+  }
+  init();
+    </script>
+}

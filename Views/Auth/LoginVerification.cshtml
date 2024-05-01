@@ -1,0 +1,66 @@
+<div class="my-4 h2"></div>
+
+@if(TempData["Verification"] != null){
+   string IsVerification=(string)TempData["Verification"];
+   if(IsVerification=="success"){
+        <div class="alert alert-success h2">Hesabınız Başarıyla Doğrulandı</div>
+   }
+   else{
+        <div class="alert alert-danger">
+            <div class="h2">Hesabınız Doğrulanamadı!</div>
+            <div class="h5">Doğrulama url'sinin vakti geçmiş veya yanlış url kullandınız</div>
+        </div>
+   }
+}
+
+@* ///////////////////////////////////////////// *@
+
+@if (TempData["MailAdresiniDogrula"] != null)
+{
+    string loginIsSuccess=(string)TempData["MailAdresiniDogrula"];
+    if(loginIsSuccess=="success"){
+        <div class="alert alert-warning h3">Kayıt işlemi Başarılı. Lütfen Mail Adresinize Gönderilen doğrulama url'sini kullanın.</div>
+    }
+}
+
+@* /////////////////// Reset Password ////////////////////// *@
+
+@if(TempData["ResetPassword"] != null){
+   string IsSend=(string)TempData["ResetPassword"];
+   if(IsSend=="send"){
+        <div class="alert alert-success h2">Şifre yenileme E-postası gönderildi .</div>
+        <div class="alert alert-success h3">Eğer gelen maili bulamadıysanız Lütfen spam klasörünü ziyaret etmeyi unutmayın.</div>
+   }
+   else{
+        <div class="alert alert-danger">
+            <div class="h2">Beklenmeyen Hata!</div>
+            <div class="h5">Lütfen Bizimle İletişime geçin.</div>
+        </div>
+   }
+}
+
+@if(TempData["resetUrlCode"] != null){
+   string resetUrlCode=(string)TempData["resetUrlCode"];
+   if(resetUrlCode=="success"){
+        <div class="alert alert-success h3">Şifreniz Yenilendi.</div>
+        <a asp-action="Login" asp-controller="Auth" class="btn btn-outline-success ms-2 btn-lg">Giriş Yap</a>
+   }
+   else{
+        <div class="alert alert-danger">
+            <div class="h2">Beklenmeyen Hata!</div>
+            <div class="h5">Lütfen Bizimle İletişime geçin.</div>
+        </div>
+   }
+}
+
+
+@if(TempData["finishurl"] != null){
+
+     <div class="alert alert-danger">
+          <div class="h2">Bu URL geçersiz.</div>
+          <div class="h5">Bu URL ya kullanılmış veya vakti geçmiş olabilir. Lütfen yeni istek oluşturun</div>
+     </div>
+   
+}
+
+

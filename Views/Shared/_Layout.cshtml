@@ -1,0 +1,71 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Novaturient</title>
+    <link rel="icon" href="~/img/newicon.png">
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/IndexPageSection.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    @await RenderSectionAsync("NaciyeHakkinda_css", required: false)
+
+
+    <link rel="stylesheet" href="~/css/header.css" asp-append-version="true" />
+
+    @await RenderSectionAsync("login", required: false)
+
+
+</head>
+
+<body>
+    @* <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/5.0.9/signalr.min.js"></script> *@
+
+    @await Html.PartialAsync("_SocialMedia")
+
+    <div class="container-fluid p-0">
+        <main role="main" class="mx-auto p-0 ">
+            @* <p id="navbar-option" class="pt-0"></p> *@
+            <header>
+                <div>
+                    @await Html.PartialAsync("_Navbar")
+                    @await RenderSectionAsync("AnaSayfaHeader", required: false)
+
+                </div>
+            </header>
+
+            @RenderBody()
+
+        </main>
+    </div>
+
+    @await Html.PartialAsync("_Footer")
+
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js"></script>
+
+    @{
+        bool kapi = false;
+        var user = Context.User;
+        if (user != null) { if (user.Identity != null) { if (user.Identity.IsAuthenticated) { kapi = true; } } }
+        // Eğer kullanıcı kayıt olmuşsa
+        if (kapi)
+        {
+            if (user.IsInRole("Admin"))
+            {
+                <script src="~/js/Admin.js"></script>
+            }
+            else if (user.IsInRole("User"))
+            {
+                <script src="~/js/auth.js"></script>
+            }
+        }
+    }
+</body>
+
+</html>

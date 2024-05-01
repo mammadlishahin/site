@@ -1,0 +1,178 @@
+@using Iyzipay.Model
+@model PaymentCardAndTerapiler
+
+<style>
+  .form-control:focus {
+    box-shadow: 10px 0px 0px 0px #ffffff !important;
+    border-color: #4ca746;
+  }
+</style>
+
+<div class="p-0">
+  <div class="alert alert-dark container mt-0 mx-auto shadow mt-1" role="alert">
+    <p class="h5">Görüşme Tarihi: <span class="fw-light"
+        id="price-item">@Model.Terapi.StartDateTime.ToString("dd/MM/yyyy") <span class="fw-bolder"> / </span><span
+          class="fst-italic">saat</span> @Model.Terapi.StartDateTime.ToString("HH:mm")</span></p>
+    <p class="h5">Görüşme Türü: <span class="fw-light" id="price-item">@Model.Terapi.Type</span>
+    </p>
+    <p class="h5">Aracı Uygulama: <span class="fw-light" id="price-item">@Model.Terapi.AppName
+      </span></p>
+    <p class="h5">Ödenecek Tutar: <span class="fw-light" id="price-item">1500,00 ₺ </span> </p>
+  </div>
+  @{
+    int? veri = TempData["ISsuccess"] as int?;
+    if (veri.HasValue)
+    {
+      <div class="alert alert-danger fs-3" role="alert">
+        Randevu oluşturulamadı
+      </div>
+
+    }
+  }
+  <div class="container">
+    <div class="px-1 row">
+      <div class="col-12">
+        <div class="card mx-auto shadow" style="max-width: 600px;">
+          <div class="card-header">
+            <div class="d-flex">
+              <div class="">
+                <span> CREDIT / DEBIT CARD </span>
+              </div>
+              <div class="ms-auto" style="margin-top: -5px;">
+                <img src="https://img.icons8.com/color/36/000000/visa.png">
+                <img src="https://img.icons8.com/color/36/000000/mastercard.png">
+              </div>
+            </div>
+          </div>
+          <form class="card-body form-group" method="post" asp-controller="Work" asp-action="SuccessPeyment">
+            <div class="input-hidden-group" hidden>
+              @* <input type="hidden" asp-for="Terapi.Id" value="1"> *@
+              <input type="hidden" asp-for="Terapi.Type" value="@Model.Terapi.Type">
+              <input type="hidden" asp-for="Terapi.AppName" value="@Model.Terapi.AppName">
+              <input type="hidden" asp-for="Terapi.StartDateTime" value="@Model.Terapi.StartDateTime">
+              <input type="hidden" asp-for="Terapi.IstegeBagli" value="@Model.Terapi.IstegeBagli">
+            </div>
+
+            <label for="cc-number" class="control-label fw-semibold mb-1"> Kart Nnumarası </label>
+            <input asp-for="Card.CardNumber" id="cc-number" pattern="[0-9\s]*" type="tel"
+              class="input-lg form-control cc-number" autocomplete="cc-number" value="5528790000000008"
+              placeholder="&bull;&bull;&bull;&bull; &bull;&bull;&bull;&bull; &bull;&bull;&bull;&bull; &bull;&bull;&bull;&bull;"
+              required maxlength="19" minlength="16">
+
+            <div class="container-fluid p-0 my-2">
+              <div class="row">
+
+                <div class="col-6">
+                  <div class="container-fluid p-0">
+                    <div class="row">
+                      <p class="control-label mt-2 mb-1"> Son Kullanma Trihi </p>
+                    </div>
+                    <div class="row">
+                      <div class="col-6">
+                        <select asp-for="Card.ExpireMonth" class=" form-select" aria-label="Small select example" required>
+                          <option selected disabled>Ay</option>
+                          @for (int i = 1; i <= 12; i++)
+                          {
+                            <option value="@i">@i</option>
+                          }
+                        </select>
+                      </div>
+                      <div class="col-6">
+
+                        <select asp-for="Card.ExpireYear" class=" form-select" aria-label="Small select example" required>
+                          <option selected disabled>Yıl</option>
+                          @for (int i = 4; i < 10; i++)
+                          {
+                            <option value="@($"202{i}")">@($"202{i}")</option>
+                          }
+                        </select>
+
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-6">
+                  @* <label for="cc-cvc" class="control-label"> Güvenlik No </label> *@
+                  <p class="control-label mt-2 mb-1"> Güvenlik No </p>
+                  <input asp-for="Card.Cvc" type="password" class="input-lg form-control cc-cvc" value="123"
+                    placeholder="&bull;&bull;&bull;&bull;" pattern="[0-9]*" minlength="3" maxlength="4" required>
+                </div>
+
+              </div>
+            </div>
+
+            <label for="Card_CardHolderName" class="control-label my-1"> Kart Sahibinin Adı ve Soyadı</label>
+            <input asp-for="Card.CardHolderName" type="text" class="input-lg form-control mb-3" value="John Doe" id="Card_CardHolderName"
+              autocomplete="cc-name" pattern="[A-Za-z\s]*" required>
+
+            <div class="mb-3 form-check">
+              <input type="checkbox" class="form-check-input" id="satisSozlesmesiCheck" required>
+              <label class="form-check-label" for="satisSozlesmesiCheck"><a href="#">Mesafeli satış sözleşmesini </a>ve
+                <a href="#">ön bilgilendirme formunu</a> kabul ediyorum.</label>
+            </div>
+
+            <button type="submit" class="btn mt-3 btn-success btn-lg form-control">İşlemi Tamamla</button>
+
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+
+// Her 4 karakterden bir boşluk atar
+  function dotrKarakterdenBirBoslukBirak(inputText) {
+    var sayac = 0;
+    var returnValue = "";
+    for (var i = 0; i < inputText.length; i++) {
+      if (sayac == 4) {
+        if (inputText[i] != " ") {
+          returnValue += " ";
+          sayac=0
+          console.log("if")
+        }
+      }
+      sayac++;
+      returnValue += inputText[i]
+    }// for
+    return returnValue;
+  }// function
+  window.addEventListener('load', function () {
+    var input = document.getElementById('cc-number');
+    // Input alanını dinleme
+    if (input != null) {
+      input.addEventListener('input', function (event) {
+        var inputValue = input.value.replace(/\s/g, '');
+        if (inputValue.length > 3) {
+
+          var inputText = dotrKarakterdenBirBoslukBirak(inputValue)
+          input.value = inputText
+        }// if
+
+      }); // input.addEventListener
+    } // if
+  }); // window.addEventListener
+
+
+// Kullanıcı herhangi bir şey yazdığında  yalnızca boşluklar ve metinsel karakterlerin dışındaki tüm karakterleri kaldırır
+var inputCardHolderName = document.getElementById('Card_CardHolderName');
+inputCardHolderName.addEventListener('input', function () {
+    var inputValue = inputCardHolderName.value;
+    var sanitizedValue = inputValue.replace(/[^A-Za-z\s]/g, '');
+    inputCardHolderName.value = sanitizedValue;
+});
+
+
+
+</script>
+@*
+
+CardHolderName = "John Doe",
+CardNumber = "5528790000000008",
+ExpireMonth = "12",
+ExpireYear = "2030",
+Cvc = "123",
+*@

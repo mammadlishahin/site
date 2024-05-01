@@ -1,0 +1,136 @@
+﻿@using Models
+@model Models.User;
+
+@section login {
+  <link rel="stylesheet" href="~/css/LoginCSS/login.css" asp-append-version="true" />
+  <link href="https://fonts.googleapis.com/css2?family=Jost:wght@500&display=swap" rel="stylesheet">
+}
+
+
+@*
+Status Code:
+1: Kayıt işlemi Başarılı.
+7: Kayıt Olurken, Bu kullanıcı Adı ve Mail Adresi zaten Kullanılmış.
+4: Kayıt Olurken, Bu kullanıcı Adı zaten Kullanılmış.
+3: Kayıt Olurken, Bu Mail Adresi zaten Kullanılmış.
+
+2: Giriş Başarılı.
+5: Giriş Olurken, Kullanıcı adı ve ya Parola Yanlış.
+*@
+
+@{
+
+  string WarningName = "";
+  string WarningEmail = "";
+  string WarningPassword = "";
+  string DisplayName = "d-none";
+  string DisplayEmail = "d-none";
+  string DisplayPassword = "d-none";
+
+  if (ViewBag.StatusCode == 7)
+  {
+    WarningName = "border-warningg is-invalid";
+    WarningEmail = "border-warningg is-invalid";
+    DisplayName = "d-block";
+    DisplayEmail = "d-block";
+  }
+  else if (ViewBag.StatusCode == 4)
+  {
+    WarningName = "border-warningg is-invalid";
+    DisplayName = "d-block";
+  }
+  else if (ViewBag.StatusCode == 3)
+  {
+    WarningEmail = "border-warningg is-invalid";
+    DisplayEmail = "d-block";
+  }
+  else if (ViewBag.StatusCode == 5)
+  {
+    WarningPassword = "border-warningg is-invalid";
+    DisplayPassword = "d-block";
+  }
+}
+
+
+
+<div class="opsi">
+  <input type="hidden" id="ViewBag_PostType" value="@ViewBag.PostType">
+  <div class="mavi shadow-lg position-relative">
+    @* /////////////////// Reset Password ////////////////////// *@
+    @await Html.PartialAsync("_ResetPassword",TempData["getMail"])
+
+    <input type="checkbox" id="chk" aria-hidden="true">
+    @* Aşağıda her iki input'a atanan Id değeri geçici olarak atanıyor.
+    Çünkü Post İsteği gönderen kullanıcının Giriş'mi yaptığını yoksa Kayıt'mı olduğunu belirlemek için.
+    Geçici olarak atanan Id değeri şu an 'HomeController/Login[Post]' ve
+    'Models.LoginMethods.LoginWork' Ve sayfanın kendi içerisinde JavaScript tarafından kullanılmaktadır.
+    Ve Geçici olarak atanan Id değeri 'EfCore.DB.AddUser' ve 'EfCore.DB.SignIn' tarafından silinecektir.
+    *@
+    <div class="kayitOl">
+      <form class="log" asp-controller="Auth" asp-action="Login">
+
+        <input type="hidden" asp-for="Id" value="1">
+
+
+        <label for="chk" id="kayitOlButton" aria-hidden="kayitOl">Kayıt Ol</label>
+
+        @* Name *@
+        <span class="d-block text-center text-danger" style="margin-top: -30px;" asp-validation-for="UserName"></span>
+        <span class="text-danger text-center @DisplayName">Bu kullanıcı Adı zaten Kullanılmış</span>
+        <input class="@WarningName w-75 form-control" type="text" asp-for="UserName" placeholder="Kullanıcı adı"
+          required minlength="5" maxlength="50">
+        @* Email *@
+        <span class=" text-danger text-center @DisplayEmail">Bu Mail Adresi zaten Kullanılmış</span>
+        <span class="d-block  text-center text-danger" asp-validation-for="Email"></span>
+        <input class="@WarningEmail w-75 form-control" type="email" asp-for="Email" placeholder="Email" required
+          minlength="6" maxlength="50">
+        @* Şifre *@
+        <span class="my-1 d-block text-center text-danger" asp-validation-for="Password"></span>
+        <span class="mb-2 w-75 form-control d-flex justify-content-between align-items-center password-coontainer">
+          <input type="password" id="password-field1" asp-for="Password" placeholder="Şifre" required minlength="8"
+            maxlength="50">
+          <span toggle="password-field1" class="m-0 fa fa-fw fa-eye field-icon toggle-password"></span>
+        </span>
+
+
+        <span class="m-0 my-2 d-none text-center text-danger" id="SifrelerEslesmiyor">Şifreler Eşleşmiyor</span>
+        @* Tekrar Şifre *@
+        <span class="mb-2 w-75 form-control d-flex justify-content-between align-items-center password-coontainer">
+          <input type="password" id="password-field2" placeholder="Tekrar Şifre" required minlength="8" maxlength="50">
+          <span toggle="password-field2" class=" m-0 fa fa-fw fa-eye field-icon toggle-password"></span>
+        </span>
+
+        <button type="submit">Kayıt Ol</button>
+
+      </form>
+    </div>
+
+    <div class="girisYap">
+      <form class="log" asp-controller="Auth" asp-action="Login">
+
+        @* <input type="hidden" name="Id" value="2" /> *@
+        <input type="hidden" asp-for="Id" value="2">
+
+        <label for="chk" id="girisYapButton" aria-hidden="true">Giriş Yap</label>
+        @* Name Or Email *@
+        <span class="text-danger text-center @DisplayPassword">Kullanıcı adı ve ya Parola Yanlış</span>
+        <span class="d-block text-center text-danger" asp-validation-for="UserName"></span>
+        <input class="@WarningPassword w-75 form-control" placeholder="Email/Kullanıcı adı" asp-for="UserName" required
+          minlength="5" maxlength="50">
+
+        @* Şifre *@
+        <span class="my-1 d-block text-center text-danger" asp-validation-for="Password"></span>
+        <span
+          class="w-75 @WarningPassword form-control d-flex justify-content-between  align-items-center password-coontainer">
+          <input class="@WarningPassword " id="password-field3" type="password" placeholder="Şifre" asp-for="Password"
+            required minlength="8" maxlength="50">
+          <span toggle="password-field3" class="m-0 fa fa-fw fa-eye field-icon toggle-password"></span>
+        </span>
+        <button type="submit">Giriş Yap</button>
+      </form>
+    </div>
+
+  </div>
+</div>
+
+<script src="~/js/Login.js"></script>

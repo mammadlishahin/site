@@ -1,0 +1,13 @@
+@{
+    var logoutMessage = TempData["ErrorMessage"] as string;
+    var RequestPath = TempData["RequestPath"] as string;
+}
+
+
+
+@if (!string.IsNullOrEmpty(logoutMessage))
+{
+
+    <h4 class="alert alert-danger py-4">Buraya Istek Yapıldı: @RequestPath</h4>
+    <h3 class="alert alert-danger py-3">Error: @logoutMessage</h3>
+}

@@ -1,0 +1,24 @@
+@model Models.Soru;
+
+
+<form method="post" class="container "  asp-controller="Work" asp-action="SoruSor">
+    <input type="hidden" name="User" value="@Context.User.Identity.Name">
+    <p class="h3 py-3">Naciye Ustaya Soru Sor</p>
+    <div class="mb-3 ">
+        <label for="InputAd" class="form-label">Adınız:</label>
+        <input asp-for="Ad" type="text" class="form-control" id="InputAd" required minlength="3" maxlength="30">
+    </div>
+
+    <div class="mb-3 ">
+        <label for="InputEmail" class="form-label ">E posta adresiniz:</label>
+        <input asp-for="Email" type="email" class="form-control" id="InputEmail" 
+            aria-describedby="emailHelp" required minlength="6" maxlength="50">
+        <div id="emailHelp" class="form-text">Sorunuzun Cevabı Bu mail adresinize gönderilecektir.</div>
+    </div>
+
+
+    <label for="FormTextarea" class="form-label d-block ">Mesajınız:</label>
+    <textarea asp-for="Mesaj" class="form-control" id="FormTextarea" rows="3" required minlength="5"
+        maxlength="500"></textarea>
+    <button type="submit" class="btn px-5 my-2 btn-primary">Gönder</button>
+</form>

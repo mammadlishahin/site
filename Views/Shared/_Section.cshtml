@@ -1,0 +1,25 @@
+
+@model System.ValueTuple<string, int>
+@{
+    string ada = ".png";
+    int tupleItem2=Model.Item2+1;
+    string class1 = "item-Mental" + tupleItem2.ToString(); // Class ismini oluşturun
+
+}
+<div class="col-md  @class1 justify-content-center d-flex py-2">
+    <div class="btn-group">
+        
+        <button type="button" class="btn btn-lg btn-outline-success dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+            <strong>@Model.Item1</strong>
+            <img style="width:20px;" src="~/img/MentalIcon/@tupleItem2@ada" alt="">
+        </button>
+        
+        <ul class="dropdown-menu shadow dropdown-width80vh" >
+            <p class="px-3">Depresyon, yaygın bir ruh hali bozukluğudur ve genellikle kişinin duygusal durumunda, düşüncelerinde, davranışlarında ve fiziksel sağlığında belirgin bir etkiye sahiptir. Depresyon, birçok farklı neden veya etkene bağlı olarak ortaya çıkabilir ve kişinin yaşam kalitesini ciddi şekilde etkileyebilir.</p>
+            <li>
+                <hr class="dropdown-divider">
+            </li>
+            <li><a class="dropdown-item link-primary  link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover" href="#">Daha Fazla</a></li>
+        </ul>
+    </div>
+</div>
