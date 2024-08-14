@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
-
+// github 2
  /* Yetkilendirme ayarları */
 builder.Services.AddAuthorization(options =>
 {
